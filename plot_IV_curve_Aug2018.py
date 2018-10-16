@@ -10,12 +10,15 @@ prefs.codegen.target = 'cython'
 
 #path = "/media/sarah/storage/Data/Sarah/Patch April-June 2018/Data/"
 #path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018083007/"
-path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018082807/"
+#path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018082807/"
+path = "/Users/sarahgoethals/Documents/Thèse/DiGregorio 16.10.2018/Data August 2018/2018083005/"
+#path = "/Users/sarahgoethals/Documents/Thèse/DiGregorio 16.10.2018/Data August 2018/2018083007/"
+
 
 #file = "180830_001.VC_prepulse.9.txt"
-file = "180828_001.VC_threshold_adapt80.4.txt"
-#file = "180621_006.VC_test_pulse.4.txt"
-#file = "180620_002.VC_activation.7.txt"
+file = "180830_001.VC_threshold_adapt80.4.txt"
+#file = "180830_001.VC_threshold_adapt80.7.txt"
+
 
 name = path + file
 
@@ -83,7 +86,7 @@ v_peaks = []
 for i in range(j-1): 
     ts,Is,_ = array(sweeps[i]).T 
     peak = argmin(Is[start:end]) + start
-    print peak
+    #print peak
     idx_peaks.append(peak)
     i_peaks.append(Is[peak])
     

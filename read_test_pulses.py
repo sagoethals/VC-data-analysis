@@ -10,10 +10,13 @@ from traces_analysis import *
 prefs.codegen.target = 'cython'
 
 #path = "/media/sarah/storage/Data/Sarah/Patch April-June 2018/Data/"
-path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018083007/"
+#path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018083007/"
+path = "/Users/sarahgoethals/Documents/Thèse/DiGregorio 16.10.2018/Data August 2018/2018083005/"
+#path = "/Users/sarahgoethals/Documents/Thèse/DiGregorio 16.10.2018/Data August 2018/2018083005/"
 
-file = "180830_001.VC_test_pulse.6.txt"
-#file = "180621_006.VC_test_pulse.4.txt"
+file = "180830_001.VC_test_pulse.4.txt"
+#file = "180630_001.VC_test_pulse.7.txt"
+
 name = path + file
 
 # Plot data
@@ -90,8 +93,8 @@ V_step = abs(V_mean[int(transient_time[0]/dt)]-V_baseline) # true voltage step, 
 
 Rs = (V_step/I_amp_peak1)*1e3 # mV/pA -> GOhm
 
-print 'Leak current:', I_baseline, 'pA'
-print 'series resistance:', Rs, 'MOhm'
+#print 'Leak current:', I_baseline, 'pA'
+#print 'series resistance:', Rs, 'MOhm'
 
 # Membrane resistance
 plat = np.where((t>0.035)&(t<0.05))
@@ -100,7 +103,7 @@ I_amp_plat1 = abs(I_plat-I_baseline)
 
 Rm = (V_step/I_amp_plat1)*1e3
 
-print 'membrane resistance:', Rm, 'MOhm'
+#print 'membrane resistance:', Rm, 'MOhm'
 
 # Membrane area
 areabox = abs(0.02 * I_amp_plat1)
@@ -121,7 +124,7 @@ area = (abs(area) - areabox) # s*pA
 # membrane capacitance
 Cm = (area/V_step) * 1e3 # pS
 
-print 'cell capacitance:', Cm
+#print 'cell capacitance:', Cm
 
 
 
