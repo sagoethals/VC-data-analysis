@@ -1,5 +1,6 @@
 
 
+
 """
 Read test pulse data from txt files.
 """
@@ -10,10 +11,10 @@ from traces_analysis import *
 prefs.codegen.target = 'cython'
 
 #path = "/media/sarah/storage/Data/Sarah/Patch April-June 2018/Data/"
-path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018083007/"
+#path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018083007/"
+path = "/media/sarah/storage/Data/Sarah/Patch October 2018/2018102409/"
 
-file = "180830_001.VC_test_pulse.4.txt"
-#file = "180630_001.VC_test_pulse.7.txt"
+file = "181024_001.VC_test_pulse.8.txt"
 
 name = path + file
 
@@ -27,7 +28,9 @@ data = f.readlines()
 sweeps = []
 M = []
 
-n_samples = 4096
+n_samples = 2047 +1  #40.91953/0.01998999999999751
+#n_samples = 4096
+
 j = 1
 for i, line in enumerate(data):
     if  i < j*n_samples:
@@ -47,12 +50,16 @@ Vs = zeros((j-1, n_samples-1))
 for i in range(j-1):
     t,I,V=array(sweeps[i]).T
     
-    if len(I) == 4095:
+    #if len(I) == 4095:
+    if len(I) == 2047:
         Is[i,:] = I
         Vs[i,:] = V
     else:
         Is[i,:] = I[1:]
         Vs[i,:] = V[1:]
+    
+    #Is[i,:] = I
+    #Vs[i,:] = V
     
     subplot(211)
     plot(t,I, color = colors[i])
@@ -73,17 +80,18 @@ V_mean = mean(Vs, axis=0)
 
 figure(2)
 plot(t, I_mean)
+ylabel('Mean I (pA)')
 show()
 
-dt = 2.44*1e-5
+dt = t[1]-t[0]
 #V_pulse = -0.01
 
 # Find the peak of the first transient current 
-transient_time = find_spikes_at(I_mean, dt, -100.)
+transient_time = find_spikes_at(I_mean, dt, -70.)
 I_peak = find_peak(I_mean, dt, transient_time[0]) # contains the index and value
 
 # Series resistance
-base = np.where((t>0.005)&(t<0.03))
+base = np.where((t>0.005)&(t<0.01))
 I_baseline = mean(I_mean[base[0]])
 I_amp_peak1 = abs(I_peak[1]-I_baseline) # pA
 V_baseline = mean(V_mean[base[0]]) # the true baseline potential
@@ -91,22 +99,22 @@ V_step = abs(V_mean[int(transient_time[0]/dt)]-V_baseline) # true voltage step, 
 
 Rs = (V_step/I_amp_peak1)*1e3 # mV/pA -> GOhm
 
-#print 'Leak current:', I_baseline, 'pA'
-#print 'series resistance:', Rs, 'MOhm'
+print 'Leak current:', I_baseline, 'pA'
+print 'series resistance:', Rs, 'MOhm'
 
 # Membrane resistance
-plat = np.where((t>0.035)&(t<0.05))
+plat = np.where((t>0.015)&(t<0.02))
 I_plat = mean(I_mean[plat[0]])
 I_amp_plat1 = abs(I_plat-I_baseline)
 
 Rm = (V_step/I_amp_plat1)*1e3
 
-#print 'membrane resistance:', Rm, 'MOhm'
+print 'membrane resistance:', Rm, 'MOhm'
 
 # Membrane area
-areabox = abs(0.02 * I_amp_plat1)
+areabox = abs(0.01 * I_amp_plat1)
 #print areabox, I_baseline
-area_idx = np.where((t>0.03)&(t<0.05))
+area_idx = np.where((t>0.01)&(t<0.02))
 area_time = t[area_idx[0]]
 area_I = I_mean[area_idx[0]]-I_baseline
 
@@ -114,15 +122,15 @@ area = 0
 for i in range(len(area_I)-1): 
     area = area + (area_I[i]*(area_time[i+1]-area_time[i])) + (0.5*((area_I[i+1]-area_I[i])*(area_time[i+1]-area_time[i])))
 
-#print 'area tot', area
+print 'area tot', area
 
 area = (abs(area) - areabox) # s*pA 
-#print 'area peak', area
+print 'area peak', area
 
 # membrane capacitance
 Cm = (area/V_step) * 1e3 # pS
 
-#print 'cell capacitance:', Cm
+print 'cell capacitance:', Cm
 
 
 
