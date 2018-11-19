@@ -12,7 +12,7 @@ prefs.codegen.target = 'cython'
 
 path = "/media/sarah/storage/Data/Sarah/Patch October 2018/2018102402/"
 
-file = "181024_001.VC_threshold_adapt80.3.txt"
+file = "181024_001.VC_threshold_adapt70.1.txt"
 
 name = path + file
 

@@ -1,6 +1,4 @@
 
-
-
 """
 Read test pulse data from txt files.
 """
@@ -79,9 +77,9 @@ I_mean = mean(Is, axis=0)
 V_mean = mean(Vs, axis=0)
 
 figure(2)
-plot(t, I_mean)
+plot(t, I_mean, 'k')
 ylabel('Mean I (pA)')
-show()
+
 
 dt = t[1]-t[0]
 #V_pulse = -0.01
@@ -89,23 +87,28 @@ dt = t[1]-t[0]
 # Find the peak of the first transient current 
 transient_time = find_spikes_at(I_mean, dt, -70.)
 I_peak = find_peak(I_mean, dt, transient_time[0]) # contains the index and value
+plot((I_peak[0]+1)*dt, I_peak[1], 'ro')
 
 # Series resistance
 base = np.where((t>0.005)&(t<0.01))
 I_baseline = mean(I_mean[base[0]])
+plot(t, I_baseline*ones(len(I_mean)), 'c--', label='baseline')
+
 I_amp_peak1 = abs(I_peak[1]-I_baseline) # pA
 V_baseline = mean(V_mean[base[0]]) # the true baseline potential
-V_step = abs(V_mean[int(transient_time[0]/dt)]-V_baseline) # true voltage step, in mV
+V_step = abs(V_mean[int(I_peak[0]+1)]-V_baseline) # true voltage step, in mV
 
 Rs = (V_step/I_amp_peak1)*1e3 # mV/pA -> GOhm
 
 print 'Leak current:', I_baseline, 'pA'
+print 'Peak current amplitude:', I_amp_peak1
 print 'series resistance:', Rs, 'MOhm'
 
 # Membrane resistance
 plat = np.where((t>0.015)&(t<0.02))
 I_plat = mean(I_mean[plat[0]])
 I_amp_plat1 = abs(I_plat-I_baseline)
+plot(t, I_plat*ones(len(I_mean)), 'm--', label='plateau')
 
 Rm = (V_step/I_amp_plat1)*1e3
 
@@ -113,7 +116,6 @@ print 'membrane resistance:', Rm, 'MOhm'
 
 # Membrane area
 areabox = abs(0.01 * I_amp_plat1)
-#print areabox, I_baseline
 area_idx = np.where((t>0.01)&(t<0.02))
 area_time = t[area_idx[0]]
 area_I = I_mean[area_idx[0]]-I_baseline
@@ -122,18 +124,18 @@ area = 0
 for i in range(len(area_I)-1): 
     area = area + (area_I[i]*(area_time[i+1]-area_time[i])) + (0.5*((area_I[i+1]-area_I[i])*(area_time[i+1]-area_time[i])))
 
-print 'area tot', area
-
 area = (abs(area) - areabox) # s*pA 
-print 'area peak', area
+#print 'area peak', area
 
 # membrane capacitance
 Cm = (area/V_step) * 1e3 # pS
 
 print 'cell capacitance:', Cm
+print 'Time cst:', Cm*Rs
 
+legend(frameon=False)
 
-
+show()
 
 
 

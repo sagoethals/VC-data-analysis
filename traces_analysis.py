@@ -21,6 +21,6 @@ def find_spikes_at(data, dt, thres):
 
 def find_peak(data, dt, t_transient):
     start = int(t_transient/dt)
-    end = int(t_transient/dt+0.0002/dt)
+    end = int(t_transient/dt+0.0004/dt)
     peak_idx = np.argmin(data[start:end]) + start
     return peak_idx, data[peak_idx]
