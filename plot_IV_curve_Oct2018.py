@@ -10,9 +10,9 @@ from brian2 import *
 
 prefs.codegen.target = 'cython'
 
-path = "/media/sarah/storage/Data/Sarah/Patch October 2018/2018102402/"
+path = "/media/sarah/storage/Data/Sarah/Patch October 2018/2018102304/"
 
-file = "181024_001.VC_threshold_adapt70.1.txt"
+file = "181023_001.VC_threshold_adapt70.3.txt"
 
 name = path + file
 
@@ -79,6 +79,14 @@ for i in range(j-1):
 #    figure(2)
 #    plot(ts, Is)
 #    plot(ts[peak], Is[peak], 'o')
+
+idx_th = where(array(i_peaks)>=-200.)[0][-1]
+v_threshold = vs[idx_th]
+#current_SI[k] = i_peaks[idx_th] - baseline
+peak_i = i_peaks[idx_th+1] - i_peaks[idx_th]
+
+print 'Threshold:', v_threshold
+print 'Peak axonal current:', peak_i
 
 figure('IV curve')
 plot(vs[:-1], i_peaks, 'k-')

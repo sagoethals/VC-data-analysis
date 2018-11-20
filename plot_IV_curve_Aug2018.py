@@ -9,14 +9,13 @@ from brian2 import *
 prefs.codegen.target = 'cython'
 
 #path = "/media/sarah/storage/Data/Sarah/Patch April-June 2018/Data/"
-path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018083005/"
+path = "/media/sarah/storage/Data/Sarah/Patch August 2018/201808290/"
 #path = "/media/sarah/storage/Data/Sarah/Patch August 2018/2018082807/"
 
 #file = "180830_001.VC_prepulse.9.txt"
 #file = "180830_001.VC_threshold_adapt80.4.txt"
-file = "180830_001.VC_threshold_adapt60.3.txt"
-Rs = 22.36
-
+file = "180829_001.VC_threshold_adapt80.4.txt"
+Rs = 58
 
 name = path + file
 
@@ -92,19 +91,13 @@ for i in range(j-1):
     
 # Analysis
     
-baseline = mean(i_peaks[:14])
-diffI = []
-for i in range(18):
-    dI = abs(i_peaks[i+1]-i_peaks[i])
-    diffI.append(dI)
-v_threshold = v_peak[argmax(diffI)]
-i_si = i_peaks[argmax(diffI)]
-peak_i = i_peaks[argmax(diffI)+1]
-peak_axonal_i = peak_i-i_si
+idx_th = where(array(i_peaks)>=-200.)[0][-1]
+v_threshold = vs[idx_th]
+#current_SI[k] = i_peaks[idx_th] - baseline
+peak_i = i_peaks[idx_th+1] - i_peaks[idx_th]
 
 print 'Threshold:', v_threshold
-print 'Current at SI:', i_si
-print 'Peak axonal current:', peak_axonal_i
+print 'Peak axonal current:', peak_i
 
 figure('IV curve')
 plot(vs[:-1], i_peaks, '-o', color='k')
